@@ -12,17 +12,28 @@ data DevServerConfig = DevServerConfig
   { serverExeName :: String
   , clientBuildDir :: FilePath
   , clientSrcDir :: FilePath
+  , clientFileExtensions :: [String]
   , webSocketPort :: Int
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON)
+
+defaultDevServerConfig :: DevServerConfig
+defaultDevServerConfig =
+  DevServerConfig
+  { serverExeName = "server"
+  , clientBuildDir = "./client"
+  , clientSrcDir = "./client/src"
+  , clientFileExtensions = ["ts", "tsx"]
+  , webSocketPort = 8082
+  }
 
 runDevServer :: DevServerConfig -> IO ()
 runDevServer DevServerConfig {..} = withLogger $ \log -> do
 
   concurrently 
     (watchServer serverExeName (changeColor Green log))
-    (watchClient clientBuildDir clientSrcDir webSocketPort (changeColor Red log))
+    (watchClient clientBuildDir clientSrcDir clientFileExtensions webSocketPort (changeColor Red log))
 
   log "DONE"
 

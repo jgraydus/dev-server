@@ -6,7 +6,7 @@ When server code changes, the server is rebuilt and restarted.
 
 ### config params
 
-- serverExeName: name of the server executable as it appears in the cabal file
+- serverExeName: name of the server executable as it appears in the cabal file. default = "server"
 
 ## client
 
@@ -26,7 +26,8 @@ socket.addEventListener('message', (event) => {
 
 ### config params
 
-- clientBuildDir: directory where build command will run
-- clientSrcDir: directory to watch for file changes
-- webSocketPort: port on which to run the websocket
+- clientBuildDir: directory where build command will run. default = "./client"
+- clientSrcDir: directory to watch for file changes. default = "./client/src"
+- clientFileExtensions: file extensions of source files. changes to files that don't end with these extensions will be ignored. default = ["ts", "tsx"]
+- webSocketPort: port on which to run the websocket. default = 8082
 

@@ -16,14 +16,11 @@ import System.Process.Typed
 endsWith :: String -> String -> Bool
 endsWith pattern str = pattern == drop (length str - length pattern) str
 
-isTriggerFileType :: String -> Bool
-isTriggerFileType = endsWith ".tsx"
-
 dropLastCharacter :: String -> String
 dropLastCharacter s = take l s where l = length s - 1
 
-watchClient :: FilePath -> FilePath -> Int -> FastLogger -> IO ()
-watchClient clientBuildDir clientSrcDir webSocketPort log = do
+watchClient :: FilePath -> FilePath -> [String] -> Int -> FastLogger -> IO ()
+watchClient clientBuildDir clientSrcDir clientFileExtensions webSocketPort log = do
   fileChangedRef :: IORef Bool <- newIORef False
   browser :: MVar Connection   <- newEmptyMVar
 
@@ -55,6 +52,10 @@ watchClient clientBuildDir clientSrcDir webSocketPort log = do
       withPingThread conn 30 (pure ()) $ forever $ do
         msg <- receive conn
         sendTextData @Text conn "NOP"
+
+  let isTriggerFileType path =
+        let f ext = endsWith ("." <> ext) path
+        in or (fmap f clientFileExtensions)
 
   -- watch for changes
   forkIO $ withManager $ \mgr -> do
