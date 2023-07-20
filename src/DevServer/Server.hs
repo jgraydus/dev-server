@@ -58,8 +58,8 @@ watchServer serverExeName log = do
     let filter = \case
           Added path _ _ -> isTriggerFileType path
           Removed path _ _ -> isTriggerFileType path
-          Unknown {} -> False
           Modified path _ _ -> isTriggerFileType path
+          _ -> False
         action _ = writeIORef fileChangedRef True
     watchTree mgr "." filter action
     forever $ threadDelay 1000000
