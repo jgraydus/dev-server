@@ -1,5 +1,12 @@
 {-# LANGUAGE DerivingStrategies, DeriveAnyClass #-}
-module DevServer where
+module DevServer (
+    defaultDevServerConfig,
+    DevServerConfig(..),
+    runDevServer,
+    module DevServer.Client,
+    module DevServer.Server,
+    module DevServer.Logger,
+) where
 
 import Control.Concurrent.Async (concurrently)
 import Data.Aeson (FromJSON, ToJSON)
