@@ -19,6 +19,7 @@ data DevServerConfig = DevServerConfig
   { serverExeName :: String
   , clientBuildDir :: FilePath
   , clientSrcDir :: FilePath
+  , clientBuildCommand :: String
   , clientFileExtensions :: [String]
   , webSocketPort :: Int
   }
@@ -31,6 +32,7 @@ defaultDevServerConfig =
   { serverExeName = "server"
   , clientBuildDir = "./client"
   , clientSrcDir = "./client/src"
+  , clientBuildCommand = "npm run build"
   , clientFileExtensions = ["ts", "tsx"]
   , webSocketPort = 8082
   }
@@ -40,7 +42,7 @@ runDevServer DevServerConfig {..} = withLogger $ \log -> do
 
   concurrently 
     (watchServer serverExeName (changeColor Green log))
-    (watchClient clientBuildDir clientSrcDir clientFileExtensions webSocketPort (changeColor Red log))
+    (watchClient clientBuildDir clientSrcDir clientBuildCommand clientFileExtensions webSocketPort (changeColor Red log))
 
   log "DONE"
 

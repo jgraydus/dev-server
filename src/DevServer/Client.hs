@@ -19,15 +19,15 @@ endsWith pattern str = pattern == drop (length str - length pattern) str
 dropLastCharacter :: String -> String
 dropLastCharacter s = take l s where l = length s - 1
 
-watchClient :: FilePath -> FilePath -> [String] -> Int -> FastLogger -> IO ()
-watchClient clientBuildDir clientSrcDir clientFileExtensions webSocketPort log = do
+watchClient :: FilePath -> FilePath -> String -> [String] -> Int -> FastLogger -> IO ()
+watchClient clientBuildDir clientSrcDir clientBuildCommand clientFileExtensions webSocketPort log = do
   fileChangedRef :: IORef Bool <- newIORef False
   browser :: MVar Connection   <- newEmptyMVar
 
   let buildClient = do
         log "rebuilding client"
         writeIORef fileChangedRef False
-        runProcess $ setWorkingDir clientBuildDir $ shell "npm run build"
+        runProcess $ setWorkingDir clientBuildDir $ shell clientBuildCommand
 
   let notifyBrowser = do
         log "notifying connection"
